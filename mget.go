@@ -6,6 +6,8 @@ import (
 	"io"
 	"os"
 	"regexp"
+
+	"github.com/gookit/color"
 )
 
 func main() {
@@ -40,6 +42,8 @@ func main() {
 		res := validKeyWord.MatchString(inputString)
 		if res == true {
 			hasKeyWord = true
+			inputString = validKeyWord.ReplaceAllString(inputString, color.Red.Sprint(keyWord))
+
 		}
 
 		if inputString == "\n" {
