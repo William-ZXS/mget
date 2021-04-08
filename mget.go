@@ -20,7 +20,9 @@ func main() {
 	}
 	keyWord := args[1]
 
-	inputFile, inputError := os.Open("/Users/william/.ssh/william")
+	sourceFilePath := "/Users/william/.ssh/william"
+
+	inputFile, inputError := os.Open(sourceFilePath)
 	if inputError != nil {
 		fmt.Printf("An error occurred on opening the inputfile\n" +
 			"Does the file exist?\n" +
@@ -47,9 +49,8 @@ func main() {
 		}
 
 		if inputString == "\n" {
-			// fmt.Println("==空格===")
 			if hasKeyWord == true {
-				// fmt.Println("===包含关键字的段落====")
+				paragraph += "file path: " + sourceFilePath + "\n"
 				fmt.Println(paragraph)
 				hasKeyWord = false
 			}
