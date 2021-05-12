@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"regexp"
@@ -67,12 +68,15 @@ func main() {
 		fmt.Println("your key word?")
 		return
 	}
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	file, err := exec.LookPath(os.Args[0])
 	if err != nil {
-		fmt.Println(err)
+		return
 	}
-	fmt.Println(dir)
-	absConfPath := path.Join(dir, confPath)
+
+	currPath, err := filepath.Abs(filepath.Dir(file))
+
+	fmt.Println(currPath)
+	absConfPath := path.Join(currPath, confPath)
 
 	keyWord := args[1]
 
