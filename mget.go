@@ -5,23 +5,14 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
+	"path/filepath"
 	"regexp"
 
 	"github.com/gookit/color"
 )
 
-func main() {
-
-	// 获取命令行参数
-	args := os.Args
-	if args == nil || len(args) < 2 {
-		fmt.Println("your key word?")
-		return
-	}
-	keyWord := args[1]
-
-	sourceFilePath := "/Users/william/.ssh/william"
-
+func getData(sourceFilePath string, keyWord string) {
 	inputFile, inputError := os.Open(sourceFilePath)
 	if inputError != nil {
 		fmt.Printf("An error occurred on opening the inputfile\n" +
@@ -63,4 +54,51 @@ func main() {
 			return
 		}
 	}
+}
+
+func main() {
+
+	//conf
+	confPath := "mget.conf"
+
+	//解析参数
+	args := os.Args
+	if args == nil || len(args) < 2 {
+		fmt.Println("your key word?")
+		return
+	}
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(dir)
+	absConfPath := path.Join(dir, confPath)
+
+	keyWord := args[1]
+
+	// confFileList := make([]string, 10)
+	var confFileSlice []string
+	confFile, confErr := os.Open(absConfPath)
+	if confErr != nil {
+		// fmt.Errorf("mget.conf not found")
+		fmt.Println("mget.conf not found!")
+		return
+	}
+	defer confFile.Close()
+	confReader := bufio.NewReader(confFile)
+	for {
+		confString, readerErr := confReader.ReadString('\n')
+		confFileSlice = append(confFileSlice, confString)
+
+		if readerErr == io.EOF {
+			break
+		}
+	}
+
+	fmt.Println("数据源", confFileSlice)
+
+	for _, sourceFilePath := range confFileSlice {
+		getData(sourceFilePath, keyWord)
+	}
+
 }
